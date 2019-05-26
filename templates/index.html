@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<style>
+#irisdiv{
+    margin: 50px auto;
+    width: 700px;
+}
+#linear_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+#logic_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+</style>
+
+
+<script>
+
+$(function(){
+    $("#logic_pred_button").click(function(){
+        var sex = $("#sex").val();
+        var age = $("#age").val();
+        var fare = $("#fare").val();
+        var logic_select = $("#logic_select").val();
+        $.post("pred/",
+            {
+                csrfmiddlewaretoken:'{{csrf_token}}', //Django下的CSRF预防机制,对post请求有效
+                sex:sex,
+                age:age,
+                fare:fare,
+                logic_select:logic_select,
+            },
+
+
+            function(data,status){
+                console.log(data);
+                $("#logic_result").html(data.msg+"<br>"+data.acc);//text()
+            }
+
+        );
+    });    
+})
+</script>
+
+
+
+
+
+<body>
+<div id=irisdiv>
+<center><h1>泰坦尼克号生存预测</h1></center>
+<form action="#" method="get">
+
+<hr>
+<div id=logic_pred>
+    
+    <div>性别：
+            <select name="sex" id="sex">
+                    <option value="male">男</option>
+                    <option value="femaile">女</option>
+          </select>
+
+            <br>年龄：<input type="text" name="age" id="age">
+            <!--<br>儿童：<input type="text" name="child" id="child" disabled>-->
+            <br>票价：<input type="text" name="fare" id="fare">
+    </div>
+    <label for="logic_select">选择逻辑分类算法</label>
+    <select name="logic_select" id="logic_select">
+            <option value="KNN">KNN</option>
+            <option value="LogicRegression">逻辑回归</option>
+            <option value="DecisionTree">决策树</option>
+            <option value="RandomForest">随机森林</option>
+            <option value="SVM">支持向量机</option>
+            <!-- <option value="KMeans">KMeans聚类</option> -->
+    </select>
+    <br><input type="button" value="预测" id=logic_pred_button>
+    <br><div id=logic_result></div>
+</div>
+
+</form>
+</div>   
+</body>
+</html>
